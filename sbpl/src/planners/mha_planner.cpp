@@ -714,9 +714,9 @@ int MHAPlanner::ImprovePath() {
       bool mha_lite_anchor = uhs_val > anchor_val;
 
       if (mha_lite_anchor) {
-        ROS_WARN("Anchor state ID:%d   G:%ld    H:%ld\n", anchor_state->id,
+        ROS_WARN("Anchor state ID:%d   G:%u    H:%d\n", anchor_state->id,
                  anchor_state->g, anchor_state->h);
-        ROS_WARN("Anchors aweigh! chosen queue (%d) has f-val %d, anchor-h %ld, minkey %ld, and anchor has min key %ld",
+        ROS_WARN("Anchors aweigh! chosen queue (%d) has f-val %u, anchor-h %ld, minkey %ld, and anchor has min key %ld",
                  q_id, anchor_state->g + anchor_state->h,
                  (long int)(inflation_eps * anchor_state->h), best_q_min_key.key[0],
                  anchor_val);
@@ -766,7 +766,7 @@ int MHAPlanner::ImprovePath() {
       if (mha_lite_anchor) {
         ROS_WARN("Anchor state ID:%d   G:%d    H:%d\n", anchor_state->id,
                  anchor_state->g, anchor_state->h);
-        ROS_WARN("Anchors aweigh! chosen queue (%d) has f-val %ld, anchor-h %ld, minkey %ld, and anchor has min key %ld",
+        ROS_WARN("Anchors aweigh! chosen queue (%d) has f-val %u, anchor-h %ld, minkey %ld, and anchor has min key %ld",
                  q_id, anchor_state->g + anchor_state->h,
                  (long int)(inflation_eps * anchor_state->h), best_q_min_key.key[0],
                  anchor_val);
