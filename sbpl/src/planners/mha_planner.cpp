@@ -32,7 +32,7 @@ using namespace boost::math;
 using namespace std;
 using namespace mha_planner;
 
-MHAPlanner::MHAPlanner(EnvironmentMHA *environment, int num_heurs,
+ImpMHAPlanner::ImpMHAPlanner(EnvironmentMHA *environment, int num_heurs,
                        bool bSearchForward) :
   params(0.0) {
   bforwardsearch = bSearchForward;
@@ -61,11 +61,11 @@ MHAPlanner::MHAPlanner(EnvironmentMHA *environment, int num_heurs,
   start_state_id = -1;
 }
 
-MHAPlanner::~MHAPlanner() {
+ImpMHAPlanner::~ImpMHAPlanner() {
   gsl_rng_free(gsl_rand);
 }
 
-MHAState *MHAPlanner::GetState(int q_id, int id) {
+MHAState *ImpMHAPlanner::GetState(int q_id, int id) {
   assert(q_id < num_heuristics);
 
   //if this stateID is out of bounds of our state vector then grow the list
@@ -114,7 +114,7 @@ MHAState *MHAPlanner::GetState(int q_id, int id) {
   return s;
 }
 
-BestHState *MHAPlanner::GetBestHState(int q_id, int id) {
+BestHState *ImpMHAPlanner::GetBestHState(int q_id, int id) {
   assert(q_id < num_heuristics);
 
   //if this stateID is out of bounds of our state vector then grow the list
@@ -134,7 +134,7 @@ BestHState *MHAPlanner::GetBestHState(int q_id, int id) {
   return best_h_states[q_id][id];
 }
 
-void MHAPlanner::ExpandState(int q_id, MHAState *parent) {
+void ImpMHAPlanner::ExpandState(int q_id, MHAState *parent) {
   bool print = false; //parent->id == 12352;
 
   if (print) {
@@ -303,7 +303,7 @@ void MHAPlanner::ExpandState(int q_id, MHAState *parent) {
 //state is at the front of the open list
 //it's minimum f-value is an underestimate (the edge cost from the parent is a guess and needs to be evaluated properly)
 //it hasn't been expanded yet this iteration
-void MHAPlanner::EvaluateState(int q_id, MHAState *state) {
+void ImpMHAPlanner::EvaluateState(int q_id, MHAState *state) {
   if (!params.use_lazy) {
     ROS_ERROR("planner is set to not use lazy, but we got successors without a true cost!");
     exit(1);
@@ -406,7 +406,7 @@ void MHAPlanner::EvaluateState(int q_id, MHAState *state) {
 }
 
 //this should only be used with EvaluateState since it is assuming state hasn't been expanded yet (only evaluated)
-void MHAPlanner::getNextLazyElement(int q_id, MHAState *state) {
+void ImpMHAPlanner::getNextLazyElement(int q_id, MHAState *state) {
   if (state->lazyList.empty()) {
     state->g = INFINITECOST;
     state->best_parent = NULL;
@@ -430,7 +430,7 @@ void MHAPlanner::getNextLazyElement(int q_id, MHAState *state) {
   putStateInHeap(q_id, state);
 }
 
-void MHAPlanner::insertLazyList(int q_id, MHAState *state, MHAState *parent,
+void ImpMHAPlanner::insertLazyList(int q_id, MHAState *state, MHAState *parent,
                                 int edgeCost, bool isTrueCost) {
   bool print = false; //state->id == 12352 || parent->id == 12352;
 
@@ -487,7 +487,7 @@ void MHAPlanner::insertLazyList(int q_id, MHAState *state, MHAState *parent,
   }
 }
 
-void MHAPlanner::putStateInHeap(int q_id, MHAState *state) {
+void ImpMHAPlanner::putStateInHeap(int q_id, MHAState *state) {
   if (UpdateGoal(state)) {
     return;
   }
@@ -575,7 +575,7 @@ void MHAPlanner::putStateInHeap(int q_id, MHAState *state) {
   }
 }
 
-bool MHAPlanner::UpdateGoal(MHAState *state) {
+bool ImpMHAPlanner::UpdateGoal(MHAState *state) {
   bool goal_updated = false;
 
   if (goal_state_id == state->id && state->isTrueCost &&
@@ -591,7 +591,7 @@ bool MHAPlanner::UpdateGoal(MHAState *state) {
 }
 
 //returns 1 if the solution is found, 0 if the solution does not exist and 2 if it ran out of time
-int MHAPlanner::ImprovePath() {
+int ImpMHAPlanner::ImprovePath() {
 
   //if the goal <= min key in any list whose min key <= min key0 * w2
 
@@ -956,7 +956,7 @@ int MHAPlanner::ImprovePath() {
   return 1;
 }
 
-void MHAPlanner::checkHeaps(string msg) {
+void ImpMHAPlanner::checkHeaps(string msg) {
   if (planner_type == mha_planner::PlannerType::IMHA) {
     return;
   }
@@ -1020,7 +1020,7 @@ void MHAPlanner::checkHeaps(string msg) {
 
 }
 
-vector<int> MHAPlanner::GetSearchPath(int &solcost) {
+vector<int> ImpMHAPlanner::GetSearchPath(int &solcost) {
   vector<int> SuccIDV;
   vector<int> CostV;
   vector<bool> isTrueCost;
@@ -1112,7 +1112,7 @@ vector<int> MHAPlanner::GetSearchPath(int &solcost) {
   return wholePathIds;
 }
 
-bool MHAPlanner::outOfTime() {
+bool ImpMHAPlanner::outOfTime() {
   //if the user has sent an interrupt signal we stop
   if (interruptFlag) {
     return true;
@@ -1142,7 +1142,7 @@ bool MHAPlanner::outOfTime() {
           time_used >= params.repair_time);
 }
 
-void MHAPlanner::initializeSearch() {
+void ImpMHAPlanner::initializeSearch() {
   //it's a new search, so increment replan_number and reset the search_iteration
   replan_number++;
   search_iteration = 0;
@@ -1241,7 +1241,7 @@ void MHAPlanner::initializeSearch() {
   env_->EnsureHeuristicsUpdated((bforwardsearch == true));
 }
 
-bool MHAPlanner::Search(vector<int> &pathIds, int &PathCost) {
+bool ImpMHAPlanner::Search(vector<int> &pathIds, int &PathCost) {
   CKey key;
   TimeStarted = clock();
 
@@ -1313,7 +1313,7 @@ bool MHAPlanner::Search(vector<int> &pathIds, int &PathCost) {
   return true;
 }
 
-void MHAPlanner::prepareNextSearchIteration() {
+void ImpMHAPlanner::prepareNextSearchIteration() {
   //decrease epsilon
   inflation_eps -= params.dec_eps;
 
@@ -1345,7 +1345,7 @@ void MHAPlanner::prepareNextSearchIteration() {
   search_iteration++;
 }
 
-int MHAPlanner::GetBestHeuristicID() {
+int ImpMHAPlanner::GetBestHeuristicID() {
   // Note: Anchor is skipped for original MHA, but not for lite
   int starting_ind;
 
@@ -1513,23 +1513,23 @@ int MHAPlanner::GetBestHeuristicID() {
 
 //-----------------------------Interface function-----------------------------------------------------
 
-void MHAPlanner::interrupt() {
+void ImpMHAPlanner::interrupt() {
   interruptFlag = true;
 }
 
-int MHAPlanner::replan(vector<int> *solution_stateIDs_V, MHAReplanParams p) {
+int ImpMHAPlanner::replan(vector<int> *solution_stateIDs_V, MHAReplanParams p) {
   int solcost = 0;
   return replan(solution_stateIDs_V, p, &solcost);
 }
 
-int MHAPlanner::replan(int start, int goal, vector<int> *solution_stateIDs_V,
+int ImpMHAPlanner::replan(int start, int goal, vector<int> *solution_stateIDs_V,
                        MHAReplanParams p, int *solcost) {
   set_start(start);
   set_goal(goal);
   return replan(solution_stateIDs_V, p, solcost);
 }
 
-int MHAPlanner::replan(vector<int> *solution_stateIDs_V, MHAReplanParams p,
+int ImpMHAPlanner::replan(vector<int> *solution_stateIDs_V, MHAReplanParams p,
                        int *solcost) {
   printf("planner: replan called\n");
   params = p;
@@ -1568,7 +1568,7 @@ int MHAPlanner::replan(vector<int> *solution_stateIDs_V, MHAReplanParams p,
   return (int)solnFound;
 }
 
-int MHAPlanner::set_goal(int id) {
+int ImpMHAPlanner::set_goal(int id) {
   printf("planner: setting goal to %d\n", id);
 
   if (bforwardsearch) {
@@ -1580,7 +1580,7 @@ int MHAPlanner::set_goal(int id) {
   return 1;
 }
 
-int MHAPlanner::set_start(int id) {
+int ImpMHAPlanner::set_start(int id) {
   printf("planner: setting start to %d\n", id);
 
   if (bforwardsearch) {
@@ -1596,7 +1596,7 @@ int MHAPlanner::set_start(int id) {
 //---------------------------------------------------------------------------------------------------------
 
 
-void MHAPlanner::get_search_stats(vector<PlannerStats> *s) {
+void ImpMHAPlanner::get_search_stats(vector<PlannerStats> *s) {
   s->clear();
   s->reserve(stats.size());
 

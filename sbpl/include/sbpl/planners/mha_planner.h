@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2013, Mike Phillips and Maxim Likhachev
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -13,7 +13,7 @@
  *     * Neither the name of the University of Pennsylvania nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,13 +29,16 @@
 #ifndef _MHA_PLANNER_H_
 #define _MHA_PLANNER_H_
 
-#include "../../sbpl/headers.h"
 #include <sbpl/discrete_space_information/environment_mha.h>
+
 #include <queue>
+#include <string>
+
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-#include <string>
+#include <sbpl/planners/planner.h>
+#include <sbpl/utils/heap.h>
 
 class MHALazyListElement;
 
@@ -121,7 +124,7 @@ class MHALazyListElement{
     bool isTrueCost;
 };
 
-class MHAPlanner : public SBPLPlanner{
+class ImpMHAPlanner : public SBPLPlanner{
 
   public:
     virtual int replan(double allocated_time_secs, std::vector<int>* solution_stateIDs_V){
@@ -173,8 +176,8 @@ class MHAPlanner : public SBPLPlanner{
       printf("Not supported. Use MHAReplanParams");
     };
 
-    MHAPlanner(EnvironmentMHA* environment, int num_heuristics, bool bforwardsearch);
-    ~MHAPlanner();
+    ImpMHAPlanner(EnvironmentMHA* environment, int num_heuristics, bool bforwardsearch);
+    ~ImpMHAPlanner();
 
     virtual void get_search_stats(std::vector<PlannerStats>* s);
 
