@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2008, Maxim Likhachev
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -13,7 +13,7 @@
  *     * Neither the name of the University of Pennsylvania nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,7 +32,7 @@
 
 #include <sbpl/discrete_space_information/environment.h>
 #include <sbpl/utils/utils.h>
-#include <ompl/base/State.h>     
+#include <ompl/base/State.h>
 
 class EnvironmentPPMA : public DiscreteSpaceInformation
 {
@@ -53,11 +53,11 @@ class EnvironmentPPMA : public DiscreteSpaceInformation
     // /**
     //  * \brief heuristic estimate from start state to state with stateID
     //  */
-    // virtual int GetStartHeuristic(int q_id, int stateID) 
+    // virtual int GetStartHeuristic(int q_id, int stateID)
     // {
     //   return 0;
     // }
-    
+
     virtual void VisualizeContState(ompl::base::State* state)
     {
       return;
@@ -81,25 +81,25 @@ class EnvironmentPPMA : public DiscreteSpaceInformation
     using DiscreteSpaceInformation::GetLazyPreds;
     using DiscreteSpaceInformation::GetTrueCost;
 
-    virtual void GetSuccs(int q_id, int SourceStateID, std::vector<int>* SuccIDV, std::vector<int>* CostV) 
+    virtual void GetSuccs(int q_id, int SourceStateID, std::vector<int>* SuccIDV, std::vector<int>* CostV)
     {
       SBPL_ERROR("ERROR: GetSuccs with q_id is not implemented for this environment!\n");
-      throw new SBPL_Exception();
+      throw SBPL_Exception();
     }
 
     virtual void GetLazySuccs(int q_id, int SourceStateID, std::vector<int>* SuccIDV, std::vector<int>* CostV, std::vector<bool>* isTrueCost){
       SBPL_ERROR("ERROR: GetLazySuccs with q_id is not implemented for this environment!\n");
-      throw new SBPL_Exception();
+      throw SBPL_Exception();
     };
 
     virtual void GetLazyPreds(int q_id, int SourceStateID, std::vector<int>* SuccIDV, std::vector<int>* CostV, std::vector<bool>* isTrueCost){
       SBPL_ERROR("ERROR: GetLazyPreds with q_id is not implemented for this environment!\n");
-      throw new SBPL_Exception();
+      throw SBPL_Exception();
     };
 
     virtual int GetTrueCost(int q_id, int parentID, int childID){
       SBPL_ERROR("ERROR: GetTrueCost with q_id is not implemented for this environment!\n");
-      throw new SBPL_Exception();
+      throw SBPL_Exception();
       return -1;
     };
 
